@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+  
+  <head>
+    <meta charset="UTF-8">
+    <title>欢迎页面-L-admin1.0</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width,user-scalable=yes, minimum-scale=0.4, initial-scale=0.8,target-densitydpi=low-dpi" />
+    <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="stylesheet" href="__STATIC__/css/font.css">
+    <link rel="stylesheet" href="__STATIC__/css/xadmin.css">
+    <script src="__STATIC__/js/jquery.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/lib/layui/layui.js" charset="utf-8"></script>
+    <script type="text/javascript" src="__STATIC__/js/xadmin.js"></script>
+    <!-- 让IE8/9支持媒体查询，从而兼容栅格 -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.staticfile.org/html5shiv/r29/html5.min.js"></script>
+      <script src="https://cdn.staticfile.org/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  
+  <body class="layui-anim layui-anim-upbit">
+    <div class="x-nav">
+      <span class="layui-breadcrumb">
+      </span>
+      <a class="layui-btn layui-btn-primary layui-btn-small" style="line-height:1.6em;margin-top:3px;float:right" href="javascript:location.replace(location.href);" title="刷新">
+        <i class="layui-icon" style="line-height:38px">ဂ</i></a>
+    </div>
+    <div class="x-body">
+      <div class="layui-row" >
+        <form class="layui-form layui-col-md12 x-so" action="{:url('user/userlist')}" method="post">
+          <input class="layui-input" placeholder="开始日" name="start" id="start" autocomplete="off">
+          <input class="layui-input" placeholder="截止日" name="end" id="end" autocomplete="off">
+
+          <input type="text" name="username"  placeholder="请输入会员ID" autocomplete="off" class="layui-input">
+          <button class="layui-btn"  lay-submit="" lay-filter="sreach"><i class="layui-icon">&#xe615;</i></button>
+
+        </form>
+      </div>
+      <xblock>
+
+        <button class="layui-btn" onclick="x_admin_show('添加用户','{:url("user/userAdd")}',600,300)"><i class="layui-icon"></i>导入数据</button>
+       {if condition="$post ==1"}
+        <span class="x-right" style="line-height:40px">共有数据：<em>{$count}</em> 条</span>
+        {else /}
+        <span class="x-right" style="line-height:40px">共有数据：<em>{$fcount}</em> 条</span>
+        {/if}
+      </xblock>
+      <table class="layui-table">
+        <thead>
+          <tr>
+
+
+            {if condition="$Think.session.u_id eq 1" }
+            <th>上级账号</th>
+            {/if}
+            <th>会员ID</th>
+            <th>用户名</th>
+            <th>手机号</th>
+            <th>金额</th>
+            <th>距离上次时间</th>
+            <th>最近登录时间</th>
+<!--            {if condition="$Think.session.u_id eq 1" }-->
+<!--            <th>隶属</th>-->
+<!--            {/if}-->
+            <th>备注</th>
+            <th>操作</th></tr>
+        </thead>
+        <tbody>
+ {if condition="$post eq 1"}
+
+    {volist name='userinfo' id='vo'}
+
+          <tr>
+
+<!--            <td>{$vo.grade}</td>-->
+            {if condition="$Think.session.u_id eq 1" }
+            <td>{$vo.own}</td>
+            {/if}
+            <td>{$vo.user_id}</td>
+            <td>{$vo.username}</td>
+            <td>{$vo.phone}</td>
+            <td>{$vo.money} 元</td>
+            <td>{$vo.day} 天</td>
+            <td>{$vo.create_time}</td>
+<!--            {if condition="$Think.session.u_id eq 1" }-->
+<!--            <td>{$vo.own}</td>-->
+<!--            {/if}-->
+
+            <td>{$vo.note}</td>
+
+            <td class="td-manage">
+              <a title="编辑" class="layui-btn layui-btn-sm layui-btn-normal"  onclick="x_admin_show('编辑','{:url("user/useredit",array("id"=>$vo.id))}',600,200)" href="javascript:;">
+                编辑
+              </a>
+            </td>
+          </tr>
+        {/volist}
+   {else /}
+   {volist name='datas' id='vo'}
+   <tr>
+
+     <td>{$vo.grade}</td>
+     <td>{$vo.user_id}</td>
+     <td>{$vo.username}</td>
+     <td>{$vo.phone}</td>
+     <td>{$vo.money}</td>
+     <td>{$vo.day} 天</td>
+     <td>{$vo.create_time}</td>
+     {if condition="$Think.session.u_id eq 1" }
+     <td>{$vo.own}</td>
+     {/if}
+     <td>{$vo.note}</td>
+
+     <td class="td-manage">
+       <a title="编辑" class="layui-btn layui-btn-sm layui-btn-normal"  onclick="x_admin_show('编辑','{:url("user/useredit",array("id"=>$vo.id))}',600,200)" href="javascript:;">
+       编辑
+       </a>
+     </td>
+   </tr>
+   {/volist}
+{/if}
+
+        </tbody>
+      </table>
+      <div class="page">
+        {if condition="$post eq 1"}
+        {$list->render()}
+        {/if}
+    </div>
+    </div>
+    <script>
+      layui.use('laydate', function(){
+        var laydate = layui.laydate;
+
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#start' //指定元素
+        });
+
+        //执行一个laydate实例
+        laydate.render({
+          elem: '#end' //指定元素
+        });
+
+      });
+
+      // layui.use(['form','layer'], function() {
+      //   $ = layui.jquery;
+      //   var form = layui.form ,
+      //   layer = layui.layer;
+      //
+      //   //监听提交
+      //   form.on('submit(sreach)', function (data) {
+      //
+      //     $.ajax({
+      //       url: "{:url('user/userlist')}"
+      //
+      //       , data: data.field
+      //       , type: "post"
+      //       , success: function (data) {
+      //         console.log(data);
+      //         console.log(data.code);
+      //         if(data.code == -1){
+      //           layer.msg(data.msg, {icon: 5,time:1000},function () {
+      //             // 获得frame索引
+      //
+      //           });
+      //         }
+      //       }
+      //     });
+      //     return false;
+      //   });
+      // });
+
+    </script>
+  </body>
+
+</html>
